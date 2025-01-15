@@ -3,6 +3,7 @@ package com.suupuushan.maps.model;
 import java.io.IOException;
 import java.util.List;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.persistence.Column;
@@ -31,7 +32,7 @@ public class GeoDataModel {
   @Column(name = "type", nullable = false)
   private String type;
 
-  @Column(name = "coordinates", nullable = true, columnDefinition = "json")
+  @Column(name = "coordinates", nullable = true, columnDefinition = "text")
   private String coordinates;
 
   public Long getId() {
@@ -75,26 +76,34 @@ public class GeoDataModel {
   }
 
   @Transient
-  private List<List<Double>> flatCoordinates;
+  private List<List<List<Double>>> flatCoordinates;
 
   @Transient
-  private List<List<List<Double>>> nestedCoordinates;
+  private List<List<List<List<Double>>>> nestedCoordinates;
 
   public GeoDataModel() {
   }
 
-  public GeoDataModel(List<List<Double>> flatCoordinates) throws IOException {
-      this.flatCoordinates = flatCoordinates;
-      this.coordinatesJson = new ObjectMapper().writeValueAsString(flatCoordinates);
+  private GeoDataModel(String coordinates) {
+    this.coordinates = coordinates;
   }
 
-  public CoordinateEntity(List<List<List<Double>>> nestedCoordinates) throws IOException {
-      this.nestedCoordinates = nestedCoordinates;
-      this.coordinatesJson = new ObjectMapper().writeValueAsString(nestedCoordinates);
+  public static GeoDataModel fromFlatCoordinates(List<List<List<Double>>> flatCoordinates) throws IOException {
+      ObjectMapper mapper = new ObjectMapper();
+      GeoDataModel entity = new GeoDataModel(mapper.writeValueAsString(flatCoordinates));
+      entity.flatCoordinates = flatCoordinates;
+      return entity;
+  }
+
+    public static GeoDataModel fromNestedCoordinates(List<List<List<List<Double>>>> nestedCoordinates) throws IOException {
+      ObjectMapper mapper = new ObjectMapper();
+      GeoDataModel entity = new GeoDataModel(mapper.writeValueAsString(nestedCoordinates));
+      entity.nestedCoordinates = nestedCoordinates;
+      return entity;
   }
 
   public Object getCoordinates() throws IOException {
-      if (coordinatesJson == null) {
+      if (coordinates == null) {
           return null;
       }
 
@@ -102,24 +111,24 @@ public class GeoDataModel {
 
       // Try deserializing as flat coordinates
       try {
-          flatCoordinates = mapper.readValue(coordinatesJson, new TypeReference<List<List<Double>>>() {});
+          flatCoordinates = mapper.readValue(coordinates, new TypeReference<List<List<List<Double>>>>() {});
           return flatCoordinates;
       } catch (Exception e) {
           // If it fails, attempt deserializing as nested coordinates
       }
 
-      nestedCoordinates = mapper.readValue(coordinatesJson, new TypeReference<List<List<List<Double>>>>() {});
+      nestedCoordinates = mapper.readValue(coordinates, new TypeReference<List<List<List<List<Double>>>>>() {});
       return nestedCoordinates;
   }
 
-  public void setFlatCoordinates(List<List<Double>> flatCoordinates) throws IOException {
+  public void setFlatCoordinates(List<List<List<Double>>> flatCoordinates) throws IOException {
       this.flatCoordinates = flatCoordinates;
-      this.coordinatesJson = new ObjectMapper().writeValueAsString(flatCoordinates);
+      this.coordinates = new ObjectMapper().writeValueAsString(flatCoordinates);
   }
 
-  public void setNestedCoordinates(List<List<List<Double>>> nestedCoordinates) throws IOException {
+  public void setNestedCoordinates(List<List<List<List<Double>>>> nestedCoordinates) throws IOException {
       this.nestedCoordinates = nestedCoordinates;
-      this.coordinatesJson = new ObjectMapper().writeValueAsString(nestedCoordinates);
+      this.coordinates = new ObjectMapper().writeValueAsString(nestedCoordinates);
   }
 
   // public Long getId() {
@@ -130,12 +139,12 @@ public class GeoDataModel {
   //     this.id = id;
   // }
 
-  public String getCoordinatesJson() {
-      return coordinatesJson;
-  }
+  // public String getCoordinates() {
+  //     return coordinates;
+  // }
 
-  public void setCoordinatesJson(String coordinatesJson) {
-      this.coordinatesJson = coordinatesJson;
-  }
+  // public void setCoordinates(String coordinates) {
+  //     this.coordinates = coordinates;
+  // }
 
 }

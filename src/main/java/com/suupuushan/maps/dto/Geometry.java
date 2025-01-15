@@ -1,12 +1,10 @@
 package com.suupuushan.maps.dto;
 
-import java.util.List;
-
 public class Geometry {
   private String type;
-  private List<String> coordinates;
+  private Object coordinates;
 
-  public Geometry(String type, List<String> coordinates) {
+  public Geometry(String type, Object coordinates) {
     this.type = type;
     this.coordinates = coordinates;
   }
@@ -19,13 +17,12 @@ public class Geometry {
     this.type = type;
   }
 
-  public List<String> getCoordinates() {
+  public Object getCoordinates() {
     return coordinates;
   }
 
-  public void setCoordinates(List<String> coordinates) {
+  public void setCoordinates(Object coordinates) {
     this.coordinates = coordinates;
   }
-
   
 }
