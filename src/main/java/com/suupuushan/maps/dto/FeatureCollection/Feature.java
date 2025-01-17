@@ -1,4 +1,4 @@
-package com.suupuushan.maps.dto;
+package com.suupuushan.maps.dto.FeatureCollection;
 
 public class Feature {
   private String type;
