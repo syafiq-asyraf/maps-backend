@@ -26,9 +26,6 @@ public class GeoDataModel {
   @Column(name = "name", nullable = false)
   private String name;
 
-  @Column(name = "marker_count", nullable = true)
-  private Integer markerCount;
-
   @Column(name = "type", nullable = false)
   private String type;
 
@@ -49,14 +46,6 @@ public class GeoDataModel {
 
   public void setName(String name) {
     this.name = name;
-  }
-
-  public Integer getMarkerCount() {
-    return markerCount;
-  }
-
-  public void setMarkerCount(Integer markerCount) {
-    this.markerCount = markerCount;
   }
 
   public String getType() {

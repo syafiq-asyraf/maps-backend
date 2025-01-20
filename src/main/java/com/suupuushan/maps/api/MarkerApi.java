@@ -4,11 +4,13 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,6 +35,21 @@ public class MarkerApi {
   @PostMapping("/addMarker")
   public ResponseEntity<?> addMarker(@RequestBody MarkerModel markerModel){
     this.markerRepository.save(markerModel);
+    return new ResponseEntity<>(HttpStatus.OK);
+  }
+
+  @PutMapping("/editMarker/{id}")
+  public ResponseEntity<?> editMarker(@PathVariable Long id, @RequestBody MarkerModel markerModel){
+    MarkerModel marker = this.markerRepository.findById(id).orElse(null);
+    marker.setLat(markerModel.getLat());
+    marker.setLng(markerModel.getLng());
+    this.markerRepository.save(marker);
+    return new ResponseEntity<>(HttpStatus.OK);
+  }
+
+  @DeleteMapping("/deleteMarker/{id}")
+  public ResponseEntity<?> deleteMarker(@PathVariable Long id){
+    this.markerRepository.deleteById(id);
     return new ResponseEntity<>(HttpStatus.OK);
   }
 }

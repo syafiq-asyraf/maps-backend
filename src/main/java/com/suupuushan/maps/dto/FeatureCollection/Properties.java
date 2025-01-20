@@ -2,11 +2,10 @@ package com.suupuushan.maps.dto.FeatureCollection;
 
 public class Properties {
   private String name;
-  private Integer markerCount;
   
-  public Properties(String name, Integer markerCount){
+  public Properties(String name){
     this.name = name;
-    this.markerCount = markerCount;
+
   }
 
   public String getName() {
@@ -17,13 +16,4 @@ public class Properties {
     this.name = name;
   }
 
-  public Integer getMarkerCount() {
-    return markerCount;
-  }
-
-  public void setMarkerCount(Integer markerCount) {
-    this.markerCount = markerCount;
-  }
-
-  
 }

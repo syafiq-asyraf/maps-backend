@@ -9,8 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,7 +34,7 @@ public class GeoDataApi {
     List<Feature> features = new ArrayList<>();
 
     for (GeoDataModel geoData : data) {
-      Properties props = new Properties(geoData.getName(), geoData.getMarkerCount());
+      Properties props = new Properties(geoData.getName());
       Geometry geo = new Geometry(geoData.getType(), geoData.getCoordinates());
       Feature feature = new Feature(geoData.getId(), props, geo);
       features.add(feature);
@@ -45,14 +43,6 @@ public class GeoDataApi {
     GeoData geoData = new GeoData(features);
     
     return new ResponseEntity<>(geoData, HttpStatus.OK);
-  }
-
-  @PostMapping("/{id}/updateMarkerCount")
-  public ResponseEntity<?> updateMarkerCount(@PathVariable Long id){
-    GeoDataModel data = this.geoDataRepository.findById(id).orElse(null);
-    data.setMarkerCount(data.getMarkerCount() + 1);
-    this.geoDataRepository.save(data);
-    return new ResponseEntity<>(HttpStatus.OK);
   }
   
 }
