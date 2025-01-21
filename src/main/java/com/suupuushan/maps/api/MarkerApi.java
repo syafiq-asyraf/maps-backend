@@ -28,7 +28,7 @@ public class MarkerApi {
   
   @GetMapping("")
   public ResponseEntity<?> getAllMarkers() {
-    List<MarkerModel> markers = this.markerRepository.findAll();
+    List<MarkerModel> markers = this.markerRepository.findAllByOrderByIdAsc();
     return new ResponseEntity<>(markers, HttpStatus.OK);
   }
 
