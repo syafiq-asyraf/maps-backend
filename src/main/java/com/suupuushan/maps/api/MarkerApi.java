@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,30 +41,30 @@ public class MarkerApi {
     return new ResponseEntity<>(markers, HttpStatus.OK);
   }
 
-  // @GetMapping("")
-  // public ResponseEntity<?> getMarkersByParentId(@RequestParam Long parentId){
-  //   List<MarkerModel> markers = this.markerRepository.findByParentId(parentId);
-  //   return new ResponseEntity<>(markers, HttpStatus.OK);
-  // }
-
+  @Transactional
   @PostMapping("/addMarker")
   public ResponseEntity<?> addMarker(@RequestBody MarkerModel markerModel){
-    this.markerRepository.save(markerModel);
+    // this.markerRepository.save(markerModel);
+    this.markerRepository.addMarker(markerModel.getLat(), markerModel.getLng(), markerModel.getParentId());
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
+  @Transactional
   @PutMapping("/editMarker/{id}")
   public ResponseEntity<?> editMarker(@PathVariable Long id, @RequestBody MarkerModel markerModel){
-    MarkerModel marker = this.markerRepository.findById(id).orElse(null);
-    marker.setLat(markerModel.getLat());
-    marker.setLng(markerModel.getLng());
-    this.markerRepository.save(marker);
+    // MarkerModel marker = this.markerRepository.findById(id).orElse(null);
+    // marker.setLat(markerModel.getLat());
+    // marker.setLng(markerModel.getLng());
+    // this.markerRepository.save(marker);
+    this.markerRepository.updateMarker(id, markerModel.getLat(), markerModel.getLng());
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
+  @Transactional
   @DeleteMapping("/deleteMarker/{id}")
   public ResponseEntity<?> deleteMarker(@PathVariable Long id){
-    this.markerRepository.deleteById(id);
+    // this.markerRepository.deleteById(id);
+    this.markerRepository.deleteMarker(id);
     return new ResponseEntity<>(HttpStatus.OK);
   }
 }
