@@ -1,6 +1,8 @@
 package com.suupuushan.maps.api;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.suupuushan.maps.model.MarkerModel;
@@ -27,10 +30,21 @@ public class MarkerApi {
   private MarkerRepository markerRepository;
   
   @GetMapping("")
-  public ResponseEntity<?> getAllMarkers() {
-    List<MarkerModel> markers = this.markerRepository.findAllByOrderByIdAsc();
+  public ResponseEntity<?> getAllMarkers(@RequestParam Optional<Long> parentId) {
+    List<MarkerModel> markers = new ArrayList<>();
+    if (parentId.isPresent()) {
+      markers = this.markerRepository.findByParentId(parentId);
+    } else {
+      markers = this.markerRepository.findAllByOrderByIdAsc();
+    }
     return new ResponseEntity<>(markers, HttpStatus.OK);
   }
+
+  // @GetMapping("")
+  // public ResponseEntity<?> getMarkersByParentId(@RequestParam Long parentId){
+  //   List<MarkerModel> markers = this.markerRepository.findByParentId(parentId);
+  //   return new ResponseEntity<>(markers, HttpStatus.OK);
+  // }
 
   @PostMapping("/addMarker")
   public ResponseEntity<?> addMarker(@RequestBody MarkerModel markerModel){
